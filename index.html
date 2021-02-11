@@ -12,27 +12,49 @@
         <div class="sample">
             <input type="text" v-model="firstName">
             <input type="text" v-model="lastName">
+            <input type="text" v-model.lazy="promo">
             <hr>
             <h2 v-if="showName">Hello, {{ fullName }} </h2>
+            <h3>Your sale is {{ sale }}%</h3>
             <button class="btn btn-success" v-on:click="showName = !showName">ToggleName</button>
         </div>
     </div>
     <script>
+        function getSale(promocode, callback) {
+            let codes = {
+                newYear: 20,
+                birthday: 10
+            }
+
+            let sale = (codes[promocode]) ? codes[promocode] : 0;
+            
+            setTimeout(() => {
+                callback(sale);
+            }, 1000);
+        }
         new Vue ({
-            el: '.sample', //берем элемент (не работает выборка нескольких элементов по классу)
+            el: '.sample',
             data: {
                 firstName: '',
                 lastName: '',
+                promo: '',
+                sale: '',
+                promo: '',
                 showName: true
             },
             computed: {
                 fullName() {
                     return this.firstName + ' ' + this.lastName;
-                }
+                },
+                // sale() {
+                //     return getSale(this.promo)
+                // }
             },
-            methods: {
-                onChange() {
-                    console.log(this.name);
+            watch : {
+                promo() {
+                    getSale(this.promo, (sale) => {
+                        this.sale = sale;
+                    })
                 }
             }
         });
