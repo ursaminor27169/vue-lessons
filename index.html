@@ -9,52 +9,57 @@
 </head>
 <body>
     <div class="wrapper">
-        <div class="sample">
-            <input type="text" v-model="firstName">
-            <input type="text" v-model="lastName">
-            <input type="text" v-model.lazy="promo">
+        <div class="sample m-3">
+            <button class="btn btn-success" v-on:click="addNumber()">Add number</button>
+            <button class="btn btn-primary" v-on:click="sortNumbers()">Sort</button>
+            <button class="btn btn-primary" v-on:click="sortReverseNumbers()">Sort reverse</button>
+            <ul>
+                <li v-for="(num, i) in numbers"
+                    @mouseenter="onMouseEnter($event, i)"
+                    @mouseleave="onMouseLeave($event, i)"
+                >
+                    {{ num }} (index is {{ i }})
+                </li>
+            </ul>
             <hr>
-            <h2 v-if="showName">Hello, {{ fullName }} </h2>
-            <h3>Your sale is {{ sale }}%</h3>
-            <button class="btn btn-success" v-on:click="showName = !showName">ToggleName</button>
+            <table class="table table-bordered">
+                <tr v-for="(value, key, i) in info" :key="key">
+                    <td> {{ i }} </td>
+                    <td> {{ key }} </td>
+                    <td> {{ value }} </td>
+                </tr>
+            </table>
         </div>
     </div>
     <script>
-        function getSale(promocode, callback) {
-            let codes = {
-                newYear: 20,
-                birthday: 10
-            }
-
-            let sale = (codes[promocode]) ? codes[promocode] : 0;
-            
-            setTimeout(() => {
-                callback(sale);
-            }, 1000);
-        }
         new Vue ({
             el: '.sample',
             data: {
-                firstName: '',
-                lastName: '',
-                promo: '',
-                sale: '',
-                promo: '',
-                showName: true
+                numbers: [10, 20],
+                info: {
+                    name: 'Kate',
+                    surname: 'Polyakova'
+                }
             },
-            computed: {
-                fullName() {
-                    return this.firstName + ' ' + this.lastName;
+            methods : {
+                addNumber() {
+                    this.numbers.push(Math.floor(Math.random() * 10));
                 },
-                // sale() {
-                //     return getSale(this.promo)
-                // }
-            },
-            watch : {
-                promo() {
-                    getSale(this.promo, (sale) => {
-                        this.sale = sale;
-                    })
+                sortNumbers() {
+                    this.numbers.sort((a, b) => a - b);
+                },
+                sortReverseNumbers() {
+                    this.numbers.sort((a, b) => b - a);
+                },
+                onMouseEnter(e, i) {
+                    if (i & 1) {
+                        e.target.style.color = 'red';
+                    } else {
+                        e.target.style.color = 'blue';
+                    }
+                },
+                onMouseLeave(e, i) {
+                    e.target.style.color = 'black';
                 }
             }
         });
